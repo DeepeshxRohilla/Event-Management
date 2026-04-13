@@ -1,0 +1,37 @@
+<%- include('partials/header') %>
+
+<div class="max-w-7xl mx-auto px-4 py-16">
+    <div class="text-center mb-16">
+        <h1 class="text-6xl font-black italic uppercase tracking-tighter mb-4">
+            Fest<span class="text-red-600">Pulse</span> Pro
+        </h1>
+        <p class="text-gray-500 font-bold uppercase tracking-widest text-sm">Experience the loudest nights on campus</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <% if (events && events.length > 0) { %>
+            <% events.forEach(event => { %>
+                <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-xl border border-gray-100 transition-transform hover:scale-[1.02]">
+                    <img src="<%= event.image %>" class="w-full h-56 object-cover">
+                    <div class="p-8">
+                        <h3 class="text-red-600 font-black uppercase text-xs tracking-widest mb-1"><%= event.singerName %></h3>
+                        <h2 class="text-2xl font-black uppercase italic mb-4"><%= event.eventTitle %></h2>
+                        
+                        <div class="flex justify-between items-center mt-6">
+                            <span class="text-2xl font-black">₹<%= event.price %></span>
+                            <a href="/book/<%= event._id %>" class="bg-black text-white px-6 py-3 rounded-xl font-bold uppercase text-[10px] hover:bg-red-600 transition">
+                                Book Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="col-span-full text-center py-20 bg-gray-50 rounded-[3rem]">
+                <p class="text-gray-400 font-bold uppercase italic">No upcoming shows. Admin is planning something big!</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

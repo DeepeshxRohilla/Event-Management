@@ -1,0 +1,87 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-7xl mx-auto p-8">
+    <div class="flex justify-between items-center mb-10">
+        <h1 class="text-4xl font-black italic uppercase italic tracking-tighter">Admin <span class="text-red-600">Console</span></h1>
+        <button onclick="document.getElementById('addModal').classList.remove('hidden')" class="bg-black text-white px-8 py-3 rounded-2xl font-black uppercase text-xs hover:bg-red-600 transition-all shadow-lg shadow-red-100">Add New Concert</button>
+    </div>
+
+    <div class="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-gray-100">
+        <table class="w-full text-left border-collapse">
+            <thead class="bg-gray-50 uppercase text-[10px] font-black text-gray-400">
+                <tr>
+                    <th class="p-8">Concert Details</th>
+                    <th class="p-8">Pricing</th>
+                    <th class="p-8">Tickets Sold</th>
+                    <th class="p-8">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 font-bold">
+                <% if (events && events.length > 0) { %>
+                    <% events.forEach(event => { %>
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="p-8">
+                            <p class="text-red-600 uppercase text-xs font-black tracking-widest"><%= event.singerName %></p>
+                            <p class="text-xl font-black italic tracking-tighter uppercase"><%= event.eventTitle %></p>
+                            <p class="text-[10px] text-gray-400 mt-1"><%= event.date %> | <%= event.venue %></p>
+                        </td>
+                        <td class="p-8 text-2xl font-black tracking-tighter">₹<%= event.price %></td>
+                        <td class="p-8">
+                            <% let percent = (event.bookedSeats / event.totalSeats) * 100 %>
+                            <div class="w-48 bg-gray-100 rounded-full h-3 mb-2 overflow-hidden">
+                                <div class="bg-red-600 h-3 transition-all duration-500" style="width: <%= percent %>%"></div>
+                            </div>
+                            <p class="text-[11px] uppercase tracking-widest">
+                                <span class="text-red-600"><%= event.bookedSeats %></span> / <%= event.totalSeats %> Sold
+                            </p>
+                        </td>
+                        <td class="p-8">
+                            <a href="/admin/delete-event/<%= event._id %>" 
+                               class="bg-gray-100 text-gray-400 px-4 py-2 rounded-lg text-[10px] font-black uppercase hover:bg-red-600 hover:text-white transition"
+                               onclick="return confirm('Delete this concert and all sold tickets?')">Remove</a>
+                        </td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4" class="p-20 text-center text-gray-400 font-black uppercase italic tracking-widest">No concerts available. Add a new show to get started.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="addModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 z-[100]">
+    <div class="bg-white w-full max-w-lg rounded-[3rem] p-12 shadow-2xl animate-fade-in">
+        <h2 class="text-3xl font-black uppercase italic mb-8 tracking-tighter underline decoration-red-600 decoration-4 underline-offset-8">New <span class="text-red-600">Event Show</span></h2>
+        
+        <form action="/admin/add-event" method="POST" class="space-y-5">
+            <input type="text" name="singerName" placeholder="Singer Name" required class="w-full bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-2 focus:ring-red-600 font-bold">
+            
+            <input type="text" name="eventTitle" placeholder="Event Title (e.g. Live in Campus)" required class="w-full bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-2 focus:ring-red-600 font-bold">
+            
+            <div class="grid grid-cols-2 gap-5">
+                <input type="number" name="price" placeholder="Ticket Price" required class="bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-2 focus:ring-red-600 font-bold text-red-600">
+                <input type="number" name="totalSeats" placeholder="Total Quota" required class="bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-2 focus:ring-red-600 font-bold">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-5">
+                <input type="text" name="date" placeholder="Date (April 25, 2026)" required class="w-full bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-2 focus:ring-red-600 font-bold text-sm">
+                <input type="text" name="venue" placeholder="Venue Location" class="w-full bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-2 focus:ring-red-600 font-bold text-gray-400 text-sm">
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[9px] font-black uppercase text-gray-400 ml-4 mb-1 block tracking-widest">Poster Image URL</label>
+                <input type="text" name="image" placeholder="https://images.unsplash.com/..." class="w-full bg-gray-50 border-none p-4 rounded-2xl outline-none focus:ring-2 focus:ring-red-600 font-bold text-blue-600 text-xs italic">
+            </div>
+            
+            <div class="flex items-center space-x-6 pt-6">
+                <button type="submit" class="flex-1 bg-black text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-red-600 transition shadow-xl shadow-red-200 active:scale-95">Post Show</button>
+                <button type="button" onclick="document.getElementById('addModal').classList.add('hidden')" class="text-gray-400 font-black uppercase text-[10px] tracking-widest hover:text-black transition">Discard</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

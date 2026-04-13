@@ -1,0 +1,96 @@
+# =========================
+# Node.js (Backend & Root)
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Build output
+dist/
+build/
+
+# Cache
+.cache/
+.next/
+.nuxt/
+
+# =========================
+# React (Frontend)
+# =========================
+frontend/node_modules/
+frontend/build/
+frontend/.cache/
+frontend/.env
+
+# Vite / CRA specific
+frontend/dist/
+frontend/.vite/
+
+# =========================
+# MongoDB
+# =========================
+data/
+*.db
+*.sqlite
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE / Editors
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# Testing
+# =========================
+coverage/
+.nyc_output/
+
+# =========================
+# Misc
+# =========================
+*.zip
+*.tar
+*.gz
+*.rar
+
+# =========================
+# Optional: Docker
+# =========================
+docker-compose.override.yml
+
+# =========================
+# Optional: Logs & temp
+# =========================
+tmp/
+temp/
+
+# Ignore environment variables
+.env
+
+# Ignore dependencies
+node_modules/

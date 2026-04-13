@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+<div class="min-h-[80vh] flex items-center justify-center px-4">
+    <div class="max-w-md w-full bg-white rounded-[3rem] shadow-2xl p-10">
+        <h2 class="text-3xl font-black uppercase italic text-center mb-8">Welcome <span class="text-red-600">Back</span></h2>
+        <form action="/login" method="POST" class="space-y-6">
+            <input type="email" name="email" placeholder="Email" required class="w-full bg-gray-100 border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-red-600 outline-none">
+            <input type="password" name="password" placeholder="Password" required class="w-full bg-gray-100 border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-red-600 outline-none">
+            <button type="submit" class="w-full bg-black text-white font-black uppercase py-4 rounded-2xl hover:bg-red-600 transition">Login</button>
+        </form>
+    </div>
+</div>
+<%- include('partials/footer') %>

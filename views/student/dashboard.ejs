@@ -1,0 +1,54 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="mb-10">
+        <h1 class="text-4xl font-black italic uppercase tracking-tighter">
+            Available <span class="text-red-600">Live Shows</span>
+        </h1>
+        <p class="text-gray-500 mt-2 font-medium">
+            Welcome back, <span class="text-black font-bold text-lg"><%= user.name %></span>! Pick an artist to generate your entry pass.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <% if (events && events.length > 0) { %>
+            <% events.forEach(event => { %>
+                <div class="bg-white rounded-[2rem] overflow-hidden shadow-xl border border-gray-100 transition-all hover:scale-[1.02] hover:shadow-2xl">
+                    <div class="relative h-56">
+                        <img src="<%= event.image %>" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4 bg-black/80 backdrop-blur-md text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                            Live Show
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h3 class="text-red-600 text-sm font-black uppercase tracking-tighter"><%= event.singerName %></h3>
+                                <h2 class="text-xl font-bold text-black mt-1"><%= event.eventTitle %></h2>
+                            </div>
+                            <span class="text-2xl font-black text-black">₹<%= event.price %></span>
+                        </div>
+                        
+                        <div class="space-y-2 mt-4 text-gray-500 text-sm font-semibold">
+                            <p class="flex items-center"><i class="far fa-calendar-alt mr-2 text-red-500"></i> <%= event.date %></p>
+                            <p class="flex items-center"><i class="fas fa-map-marker-alt mr-2 text-red-500"></i> <%= event.venue || 'College Main Arena' %></p>
+                        </div>
+
+                        <div class="mt-8">
+                            <a href="/book/<%= event._id %>" class="block w-full text-center bg-black text-white font-black uppercase py-4 rounded-2xl hover:bg-red-600 transition-colors shadow-lg shadow-gray-200">
+                                Book Seat Pass
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="col-span-full text-center py-20 bg-gray-100 rounded-[3rem]">
+                <p class="text-gray-400 font-bold uppercase italic">No live shows scheduled yet. Check back later!</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

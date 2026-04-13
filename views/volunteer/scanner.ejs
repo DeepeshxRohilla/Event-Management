@@ -1,0 +1,129 @@
+<%- include('../partials/header') %>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="max-w-6xl mx-auto p-6 min-h-screen">
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-black uppercase italic tracking-tighter">Gate <span class="text-red-600">Scanner</span></h1>
+        <p class="text-gray-400 font-bold text-xs uppercase mt-2">Volunteer Mode: Scanning Active</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div class="lg:col-span-2">
+            <div id="reader" class="rounded-[2.5rem] overflow-hidden border-8 border-black shadow-2xl bg-white"></div>
+            <div class="mt-4 flex justify-center">
+                <button onclick="location.reload()" class="bg-black text-white px-6 py-2 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-red-600 transition">Reset Camera</button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] p-8 shadow-xl border border-gray-100 flex flex-col">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h3 class="font-black uppercase italic text-lg">Recent <span class="text-red-600">Entries</span></h3>
+                <button onclick="clearHistory()" class="text-[10px] font-bold text-gray-400 hover:text-red-600 uppercase">Clear</button>
+            </div>
+            
+            <div id="scan-list" class="space-y-4 overflow-y-auto h-[450px] pr-2 custom-scrollbar">
+                </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Load history from LocalStorage when page opens
+    document.addEventListener('DOMContentLoaded', () => {
+        renderHistory();
+    });
+
+    function onScanSuccess(decodedText) {
+        // Pause scanner to show popup
+        html5QrcodeScanner.pause();
+
+        fetch('/verify-scan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ticketId: decodedText })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Success Popup
+                Swal.fire({
+                    title: 'ACCESS GRANTED ✅',
+                    html: `
+                        <div class="text-left p-4 bg-gray-50 rounded-2xl border-2 border-green-100">
+                            <p class="text-gray-400 text-[10px] font-black uppercase">Student Name</p>
+                            <p class="text-xl font-black uppercase mb-3">${data.student}</p>
+                            <p class="text-gray-400 text-[10px] font-black uppercase">Assigned Seat</p>
+                            <p class="text-4xl font-black text-red-600 italic leading-none">${data.seat}</p>
+                            <p class="mt-4 text-[10px] font-bold text-gray-400 uppercase">Event: ${data.event}</p>
+                        </div>
+                    `,
+                    icon: 'success',
+                    confirmButtonText: 'Ready for Next',
+                    confirmButtonColor: '#000'
+                }).then(() => {
+                    saveToHistory(data.student, data.seat, true);
+                    html5QrcodeScanner.resume();
+                });
+            } else {
+                // Error Popup
+                Swal.fire({
+                    title: 'ENTRY DENIED ❌',
+                    text: data.message,
+                    icon: 'error',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#ff0000'
+                }).then(() => {
+                    html5QrcodeScanner.resume();
+                });
+            }
+        });
+    }
+
+    // --- History Logic ---
+
+    function saveToHistory(name, seat, success) {
+        let history = JSON.parse(localStorage.getItem('scanHistory') || '[]');
+        const newEntry = { name, seat, success, time: new Date().toLocaleTimeString() };
+        history.unshift(newEntry); // Add to top
+        localStorage.setItem('scanHistory', JSON.stringify(history.slice(0, 10))); // Keep last 10
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('scan-list');
+        const history = JSON.parse(localStorage.getItem('scanHistory') || '[]');
+        
+        if (history.length === 0) {
+            list.innerHTML = `<p class="text-gray-300 text-sm italic text-center mt-10 uppercase font-bold">No entries yet</p>`;
+            return;
+        }
+
+        list.innerHTML = history.map(item => `
+            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-2xl border-l-8 ${item.success ? 'border-green-500' : 'border-red-500'} animate-fade-in shadow-sm">
+                <div>
+                    <p class="font-black text-[10px] uppercase text-gray-400">${item.name}</p>
+                    <p class="text-xl font-black tracking-tighter italic">${item.seat}</p>
+                </div>
+                <span class="text-[10px] font-bold text-gray-300">${item.time}</span>
+            </div>
+        `).join('');
+    }
+
+    function clearHistory() {
+        localStorage.removeItem('scanHistory');
+        renderHistory();
+    }
+
+    let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+    html5QrcodeScanner.render(onScanSuccess);
+</script>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #eee; border-radius: 10px; }
+    .animate-fade-in { animation: fadeIn 0.3s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<%- include('../partials/footer') %>
