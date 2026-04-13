@@ -1,25 +1,24 @@
 {
   "name": "festpulse-pro",
   "version": "1.0.0",
-  "description": "",
+  "description": "Event and Ticket Management System",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "npm install"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "dotenv": "^17.4.1",
-    "ejs": "^5.0.1",
-    "express": "^5.2.1",
-    "express-session": "^1.19.0",
-    "mongodb": "^7.1.1",
-    "mongoose": "^9.4.1",
-    "morgan": "^1.10.1",
-    "qrcode": "^1.5.4"
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongoose": "^7.0.0",
+    "morgan": "^1.10.0",
+    "qrcode": "^1.5.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
